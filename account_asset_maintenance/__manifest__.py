@@ -9,18 +9,22 @@
     "category": "Accounting & Finance",
     "website": "https://www.tecnativa.com/",
     "author": "Tecnativa, "
+              "Onestein, "
               "Odoo Community Association (OCA)",
     "license": "AGPL-3",
     "installable": True,
     "depends": [
         "account_asset",
         "account_cancel",
+        "mail",
         "maintenance",
     ],
     "data": [
         "views/account_asset_asset_views.xml",
         "views/account_asset_category_views.xml",
+        "views/account_config_setting_views.xml",
         "views/account_invoice_views.xml",
         "views/maintenance_equipment_views.xml",
+        "wizard/scrap_equipment.xml",
     ],
 }

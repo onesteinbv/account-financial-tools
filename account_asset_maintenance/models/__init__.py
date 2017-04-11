@@ -4,4 +4,6 @@
 from . import account_asset_asset
 from . import account_invoice
 from . import account_asset_category
+from . import res_company
+from . import res_config
 from . import maintenance_equipment

@@ -3,12 +3,21 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 from odoo.tests import common
+from odoo import fields
 
 
 class TestAccountAssetMaintenance(common.SavepointCase):
     @classmethod
     def setUpClass(cls):
         super(TestAccountAssetMaintenance, cls).setUpClass()
+        cls.template = cls.env['mail.template'].create({
+            'name': 'Template 1',
+            'email_from': 'info@openerp.com',
+            'subject': 'Template Test',
+            'email_to': '',
+            'model_id': cls.env.ref(
+                'maintenance.model_maintenance_equipment').id,
+        })
         cls.partner = cls.env['res.partner'].create({
             'name': 'Test partner',
         })
@@ -55,6 +64,10 @@ class TestAccountAssetMaintenance(common.SavepointCase):
             ]
         })
         cls.invoice_line = cls.invoice.invoice_line_ids[0]
+        cls.equipment1 = cls.env['maintenance.equipment'].create({
+            'name': 'Equipment 1',
+            'equipment_scrap_template_id': cls.template.id,
+        })
 
     def test_flow(self):
         # HACK: There's no way to the created asset
@@ -83,3 +96,11 @@ class TestAccountAssetMaintenance(common.SavepointCase):
             self.assertTrue(equipments.filtered(
                 lambda x: x.name == 'Test line [{}/3]'.format(i)
             ))
+
+    def test_scrap(self):
+        wizard = self.env['wizard.perform.equipment.scrap'].create({
+            'scrap_date': fields.Date.today(),
+            'equipment_id': self.equipment1.id,
+        })
+        wizard.do_scrap()
+        self.equipment1.action_perform_scrap()
